@@ -45,7 +45,7 @@ app.post('/identify', async (req, res) => {
       } else {
         const newSecondaryContactQuery = {
           text: 'INSERT INTO Contact(email, phoneNumber, linkedid, linkPrecedence) VALUES ($1, $2, $3, $4) RETURNING *',
-          values: [email, phoneNumber, matchContact.id, 'secondary'],
+          values: [email, phoneNumber, matchContact[0].id, 'secondary'],
         };
         const newSecondaryContactResult = await pool.query(newSecondaryContactQuery);
         //console.log(newSecondaryContactResult)
