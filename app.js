@@ -48,27 +48,36 @@ app.post('/identify', async (req, res) => {
           values: [email, phoneNumber, matchContact[0].id, 'secondary'],
         };
         const newSecondaryContactResult = await pool.query(newSecondaryContactQuery);
-        //console.log(newSecondaryContactResult)
+        
+        // Fetch all secondary contact IDs linked to the primary contact ID
+        const secondaryContactIdsQuery = {
+          text: 'SELECT id FROM Contact WHERE linkedid = $1',
+          values: [matchContact[0].id],
+        };
+        const secondaryContactIdsResult = await pool.query(secondaryContactIdsQuery);
+        const secondaryIds = secondaryContactIdsResult.rows.map(row => row.id);
+        
         if (matchContact[0].email == email){
           return res.status(200).json({
             contact: {
               primaryContactId: matchContact[0].id,
               emails: [email],
-              phoneNumbers: [matchContact[0].phoneNumber , phoneNumber],
-              secondaryContactIds: [newSecondaryContactResult.rows[0].id],
+              phoneNumbers: [matchContact[0].phonenumber, phoneNumber],
+              secondaryContactIds: secondaryIds,
             }
           });
         } else {
           return res.status(200).json({
             contact: {
               primaryContactId: matchContact[0].id,
-              emails: [matchContact[0].email , email],
+              emails: [matchContact[0].email, email],
               phoneNumbers: [phoneNumber],
-              secondaryContactIds: [newSecondaryContactResult.rows[0].id],
+              secondaryContactIds: secondaryIds,
             }  
           });
         }
       }
+      
     } else {
       const newPrimaryContactQuery = {
         text: 'INSERT INTO Contact(email, phoneNumber, linkPrecedence) VALUES ($1, $2, $3) RETURNING *',
