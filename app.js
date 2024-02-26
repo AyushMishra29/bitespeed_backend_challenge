@@ -103,8 +103,13 @@ app.post('/identify', async (req, res) => {
 
 
 app.get('/checkip' , (req , res) => {
-  console.log(req.ip);
-  console.log(req.headers['x-forwarded-for'])
+  console.log("req.ip=========",req.ip);
+  console.log("req.headers======",req.headers['x-forwarded-for'])
+  const parseIp = (req) =>
+    req.headers['x-forwarded-for']?.split(',').shift()
+    || req.socket?.remoteAddress
+
+  console.log("parseIp==========" ,parseIp(req))
   return res.send({message: "success" , data: req.ip})
 })
 
