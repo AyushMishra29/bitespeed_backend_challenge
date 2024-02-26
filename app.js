@@ -102,6 +102,11 @@ app.post('/identify', async (req, res) => {
 });
 
 
+app.get('/checkip' , (req , res) => {
+  console.log(req.ip);
+  return res.send({message: "success" , data: req.ip})
+})
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
