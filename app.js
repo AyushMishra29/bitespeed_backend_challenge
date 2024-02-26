@@ -104,6 +104,7 @@ app.post('/identify', async (req, res) => {
 
 app.get('/checkip' , (req , res) => {
   console.log(req.ip);
+  console.log(req.headers['x-forwarded-for'])
   return res.send({message: "success" , data: req.ip})
 })
 
